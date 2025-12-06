@@ -1,4 +1,5 @@
 export type RenderingChain = {
+    canvas:HTMLCanvasElement,
     gl:WebGLRenderingContext,
     program:WebGLProgram,
     positionAttributeLocation:number,

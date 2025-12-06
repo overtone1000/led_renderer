@@ -61,6 +61,7 @@ export function init(canvas_id:string):RenderingChain|null
                         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
                         const rendering_chain = {
+                            canvas,
                             gl,
                             program,
                             positionAttributeLocation,

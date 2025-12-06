@@ -1,7 +1,7 @@
 import type { Square } from "../rendering_chain/led_rendering_chain";
 
-const HEIGHT=300;
-const WIDTH=600;
+const HEIGHT=200;
+const WIDTH=400;
 
 const REAL_PIXEL_COUNT_LENGTHWISE=150;
 const REAL_PIXEL_COUNT_WIDTHWISE=75;
@@ -11,7 +11,6 @@ const PIXEL_COUNT_WIDTHWISE=Math.round(REAL_PIXEL_COUNT_WIDTHWISE/FACTOR);
 
 export function get_squares_vertical()
 {
-
     const max_width=WIDTH/(PIXEL_COUNT_WIDTHWISE);
     const max_height=HEIGHT/(PIXEL_COUNT_LENGTHWISE);
 
