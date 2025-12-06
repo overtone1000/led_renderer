@@ -6,11 +6,10 @@
         {
             "type": "npm",
             "script": "dev",
-            "path": "src",
             "group": "build",
             "problemMatcher": [],
             "label": "npm: dev",
             "detail": "vite dev"
-        },
+        }
     ]
 }
