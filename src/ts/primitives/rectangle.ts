@@ -1,4 +1,4 @@
-import type { RenderingChain } from "../rendering_chain/rendering_chain";
+import type { RenderingChain } from "../rendering_chain/rendering_chain_type";
 import type { Vec_2D } from "./vecs";
 
 export function draw_rectangle(rendering_chain:RenderingChain, bottom_left:Vec_2D, rec_size:Vec_2D)

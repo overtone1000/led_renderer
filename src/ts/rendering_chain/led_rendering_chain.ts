@@ -1,22 +1,23 @@
 //Based on https://webglfundamentals.org/webgl/lessons/webgl-fundamentals.html
 //Currently on "In the case above you can see our vertex shader is doing nothing but"...
 
-import { draw_square } from "./primitives/square";
-import type { Color, Vec_2D } from "./primitives/vecs";
-import { createProgram } from "./rendering_chain/program";
-import type { RenderingChain } from "./rendering_chain/rendering_chain";
-import { createShader, fragmentShaderSource, vertexShaderSource } from "./rendering_chain/shaders";
+import convert from "color-convert";
+import { draw_square } from "../primitives/square";
+import type { Color, Vec_2D } from "../primitives/vecs";
+import { createProgram } from "./program";
+import type { RenderingChain } from "./rendering_chain_type";
+import { createShader, fragmentShaderSource, vertexShaderSource } from "./shaders";
 
 export type Square={bottom_left:Vec_2D,size:number,color:Color};
 export type RenderData=
 {
+    time:number,
     squares:Square[]
 }
 
-export function init():RenderingChain|null
+export function init(canvas_id:string):RenderingChain|null
 {
-    console.debug("Initializing.");
-    const canvas = document.querySelector<HTMLCanvasElement>("#led-gl-canvas");
+    const canvas = document.querySelector<HTMLCanvasElement>(canvas_id);
     // Initialize the GL context
 
     if(canvas!==null)
@@ -100,11 +101,17 @@ function render(rendering_chain:RenderingChain,data:RenderData)
 
         for(const square of data.squares)
         {
+            const rgb = convert.hsv.rgb(
+                square.color.h,
+                square.color.s,
+                square.color.v
+            );
+
             gl.uniform4f(
                 rendering_chain.colorUniformLocation, 
-                square.color.r,
-                square.color.g,
-                square.color.b,
+                rgb[0]/255,
+                rgb[1]/255,
+                rgb[2]/255,
                 square.color.a,
             );
             draw_square(rendering_chain, square.bottom_left, square.size);

@@ -1,6 +1,18 @@
-import { defineConfig } from 'vite';
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { defineConfig } from 'vite'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
-    root: "src",
-    base: ""
+    root: 'src',
+    base: "",
+    build: {
+        rollupOptions: {
+            input: {
+                basic: resolve(__dirname, 'src/basic_rainbow.html'),
+                stretch: resolve(__dirname, 'src/stretchy_rainbow.html'),
+            },
+        },
+    },
 });
