@@ -1,0 +1,16 @@
+{
+	"name": "myapp",
+	"private": true,
+	"version": "0.0.1",
+	"type": "module",
+	"scripts": {
+		"dev": "tsc"
+	},
+	"devDependencies": {
+		"typescript": "^5.8.3",
+		"typescript-eslint": "^8.20.0"
+	},
+	"dependencies": {
+		"simpledotcss": "^2.3.7"
+	}
+}
