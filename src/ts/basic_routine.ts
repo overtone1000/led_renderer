@@ -3,14 +3,14 @@ import convert from 'color-convert';
 
 console.debug("Initializating.");
 
-const HEIGHT=450;
-const WIDTH=225;
+const HEIGHT=600;
+const WIDTH=300;
 
 const REAL_PIXEL_COUNT_LENGTHWISE=150;
 const REAL_PIXEL_COUNT_WIDTHWISE=75;
 const FACTOR=4;
-const PIXEL_COUNT_LENGTHWISE=REAL_PIXEL_COUNT_LENGTHWISE/FACTOR;
-const PIXEL_COUNT_WIDTHWISE=REAL_PIXEL_COUNT_WIDTHWISE/FACTOR;
+const PIXEL_COUNT_LENGTHWISE=Math.round(REAL_PIXEL_COUNT_LENGTHWISE/FACTOR);
+const PIXEL_COUNT_WIDTHWISE=Math.round(REAL_PIXEL_COUNT_WIDTHWISE/FACTOR);
 
 const rendering_chain = init();
 
@@ -19,8 +19,8 @@ const start_millis=Date.now();
 function get_squares()
 {
 
-    const max_width=WIDTH/PIXEL_COUNT_WIDTHWISE;
-    const max_height=HEIGHT/PIXEL_COUNT_LENGTHWISE;
+    const max_width=WIDTH/(PIXEL_COUNT_WIDTHWISE);
+    const max_height=HEIGHT/(PIXEL_COUNT_LENGTHWISE);
 
     const square_size = Math.min(max_width,max_height);
 
@@ -110,6 +110,14 @@ function get_squares()
     return squares;
 }
 
+const OSCILLATION_PERIOD = 30000;
+const FORWARD_MOTION_PERIOD = 24001; //Should be near oscillation but slightly changed
+
+function get_temporal_oscillation(period:number,current_elapsed_time:number):number
+{
+    return (current_elapsed_time%period)/period;
+}
+
 if(rendering_chain!==null)
 {
     const squares = get_squares();
@@ -117,15 +125,34 @@ if(rendering_chain!==null)
         ()=>{
 
             const time=Date.now()-start_millis;
-            
-            const time_osc=(Math.sin(time/1000)+1)/2;
-            const rgb = convert.hsv.rgb(360*time_osc,100,100);
+
+            const forward_motion_fraction=get_temporal_oscillation(FORWARD_MOTION_PERIOD,time);
+            const oscillation_fraction=get_temporal_oscillation(OSCILLATION_PERIOD,time);
+            const oscillation_motion=(Math.sin(oscillation_fraction*(2*Math.PI))+1)/2
+
+            //console.debug(time,forward_motion_fraction,oscillation_motion);
+
             //console.debug(time_osc,rgb);
 
-            for(const n in squares)
+            const funky_curve = (location_fraction:number) => {
+                let rotation=(location_fraction+oscillation_motion)%1;
+                rotation=rotation**2;
+                rotation=(Math.cos(rotation**2*(2*Math.PI))+1)/2
+                rotation=rotation+forward_motion_fraction;
+                return rotation;
+            };
+
+            for(let n=0;n<squares.length;n++)
             {
-                const square = squares[n];                
+                const location_fraction=n/squares.length;
+                const rotation=funky_curve(location_fraction);
+
+                const square = squares[n];        
                 
+                const rgb = convert.hsv.rgb(360*rotation,100,100);
+                
+                //console.debug(location_fraction,rotation);
+
                 square.color=
                 {
                     r:rgb[0]/255,
@@ -142,6 +169,6 @@ if(rendering_chain!==null)
 
             render_frame(rendering_chain,data);
         },
-        10
+        20
     );
 }
